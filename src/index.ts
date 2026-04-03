@@ -1,7 +1,8 @@
 const fach = document.getElementById("Fach") as HTMLInputElement;
 const addButton = document.getElementById("add-button") as HTMLButtonElement;
 const deleteButton = document.getElementById("delete-button") as HTMLButtonElement;
-const overview = document.getElementById("overview") as HTMLDivElement;
+const overview = document.getElementById("overview") as HTMLUListElement;
+
 async function addFach() {
     const fach_name = fach.value.trim();
     if (!fach_name) return;
@@ -16,6 +17,7 @@ async function addFach() {
     } catch (error) {
         console.error('Error adding fach:', error);
     }
+    location.reload();
 }
 async function deleteFach() {
     const fach_name = fach.value.trim();
@@ -31,12 +33,14 @@ async function deleteFach() {
     } catch (error) {
         console.error('Error deleting fach:', error);
     }
+    location.reload();
 }
 
 fach?.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         addFach();
     }
+
 });
 addButton?.addEventListener("click", addFach);
 deleteButton?.addEventListener("click", deleteFach);
@@ -53,14 +57,12 @@ async function getFach() {
         console.error('Error fetching fach list:', error);
     }
 }
-async function init_fach_list() {
-    const fachData = await getFach();
-    if (fachData && Array.isArray(fachData)) {
-        for (const fachItem of fachData) {
-            const li = document.createElement("li");
-            li.textContent = Array.isArray(fachItem) ? fachItem[0] : fachItem;
-            document.getElementById("fach-list")?.appendChild(li);
-        }
+async function fachList() {
+    const fachList = await getFach();
+    sessionStorage.setItem('reloaded', 'false');
+    for (const fach of fachList) {
+        overview.innerHTML += `<li>${fach}</li>`;
     }
+
 }
-init_fach_list();
+fachList();

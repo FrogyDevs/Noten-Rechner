@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const fach = document.getElementById("Fach");
 const addButton = document.getElementById("add-button");
 const deleteButton = document.getElementById("delete-button");
+const overview = document.getElementById("overview");
 function addFach() {
     return __awaiter(this, void 0, void 0, function* () {
         const fach_name = fach.value.trim();
@@ -27,6 +28,7 @@ function addFach() {
         catch (error) {
             console.error('Error adding fach:', error);
         }
+        location.reload();
     });
 }
 function deleteFach() {
@@ -45,6 +47,7 @@ function deleteFach() {
         catch (error) {
             console.error('Error deleting fach:', error);
         }
+        location.reload();
     });
 }
 fach === null || fach === void 0 ? void 0 : fach.addEventListener("keydown", function (event) {
@@ -69,17 +72,13 @@ function getFach() {
         }
     });
 }
-function init() {
+function fachList() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
-        const fachData = yield getFach();
-        if (fachData && Array.isArray(fachData)) {
-            for (const fachItem of fachData) {
-                const li = document.createElement("li");
-                li.textContent = Array.isArray(fachItem) ? fachItem[0] : fachItem;
-                (_a = document.getElementById("fach-list")) === null || _a === void 0 ? void 0 : _a.appendChild(li);
-            }
+        const fachList = yield getFach();
+        sessionStorage.setItem('reloaded', 'false');
+        for (const fach of fachList) {
+            overview.innerHTML += `<li>${fach}</li>`;
         }
     });
 }
-init();
+fachList();
