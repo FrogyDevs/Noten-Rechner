@@ -16,15 +16,17 @@ function addFach() {
         const fach_name = fach.value.trim();
         if (!fach_name)
             return;
-        yield fetch(`http://localhost:8000/add-fach/${fach_name}`, {
-            method: 'POST'
-        })
-            .then(response => response.json())
-            .then(data => {
+        try {
+            const response = yield fetch(`http://localhost:8000/add-fach/${fach_name}`, {
+                method: 'POST'
+            });
+            const data = yield response.json();
             console.log(data);
             fach.value = "";
-        })
-            .catch(error => console.error('Error:', error));
+        }
+        catch (error) {
+            console.error('Error adding fach:', error);
+        }
     });
 }
 function deleteFach() {
@@ -32,15 +34,17 @@ function deleteFach() {
         const fach_name = fach.value.trim();
         if (!fach_name)
             return;
-        yield fetch(`http://localhost:8000/delete-fach/${fach_name}`, {
-            method: 'POST'
-        })
-            .then(response => response.json())
-            .then(data => {
+        try {
+            const response = yield fetch(`http://localhost:8000/delete-fach/${fach_name}`, {
+                method: 'POST'
+            });
+            const data = yield response.json();
             console.log(data);
             fach.value = "";
-        })
-            .catch(error => console.error('Error:', error));
+        }
+        catch (error) {
+            console.error('Error deleting fach:', error);
+        }
     });
 }
 fach === null || fach === void 0 ? void 0 : fach.addEventListener("keydown", function (event) {
@@ -50,3 +54,32 @@ fach === null || fach === void 0 ? void 0 : fach.addEventListener("keydown", fun
 });
 addButton === null || addButton === void 0 ? void 0 : addButton.addEventListener("click", addFach);
 deleteButton === null || deleteButton === void 0 ? void 0 : deleteButton.addEventListener("click", deleteFach);
+function getFach() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield fetch("http://localhost:8000/list-fach", {
+                method: 'GET'
+            });
+            const data = yield response.json();
+            console.log("Fetched fach list:", data);
+            return data;
+        }
+        catch (error) {
+            console.error('Error fetching fach list:', error);
+        }
+    });
+}
+function init() {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const fachData = yield getFach();
+        if (fachData && Array.isArray(fachData)) {
+            for (const fachItem of fachData) {
+                const li = document.createElement("li");
+                li.textContent = Array.isArray(fachItem) ? fachItem[0] : fachItem;
+                (_a = document.getElementById("fach-list")) === null || _a === void 0 ? void 0 : _a.appendChild(li);
+            }
+        }
+    });
+}
+init();

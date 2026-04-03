@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -7,6 +8,14 @@ load_dotenv()
 DB_PW = os.getenv('DB_PW')
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post('/add-fach/{fach_name}')
 def insert_fach(fach_name: str):
@@ -42,7 +51,9 @@ def delete_fach(fach_name: str):
     mydb.close()
     return {"message": f"Fach '{fach_name}' deleted successfully"}
 
+@app.get('/list-fach')
 def list_fach():
+    result = []
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
@@ -50,12 +61,12 @@ def list_fach():
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'SELECT * FROM fach'
+    sql = 'SELECT Fach FROM fach'
     mycursor.execute(sql)
-    result = mycursor.fetchall()
+    data = mycursor.fetchall()
     mycursor.close()
     mydb.close()
-    return result
+    return data
 
 if __name__ == '__main__':
-    list_fach()
+    print(list_fach())

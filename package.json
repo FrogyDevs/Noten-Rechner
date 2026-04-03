@@ -4,9 +4,13 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prview": "serve dist",
+    "start": "node dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "serve": "^14.2.6"
+  },
   "devDependencies": {
     "typescript": "^5.5.3"
   },
