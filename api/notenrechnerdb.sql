@@ -12,12 +12,14 @@ create table if not exists Fach (
     FachID int primary key not null auto_increment,
     SemesterID int not null,
     Fach varchar(50) not null,
-    foreign key (SemesterID) references Semester(SemesterID)
+    foreign key (SemesterID) references Semester(SemesterID) on delete cascade
 
 );
 create table if not exists Note (
     NotenID int primary key not null auto_increment,
-    Note int not null
+    Note int not null,
+    FachID int not null,
+    foreign key (FachID) references Fach(FachID) on delete cascade
 );
 
 insert into Semester (Semester) values ('HS1'),('FS1'),('HS2'),('FS2');

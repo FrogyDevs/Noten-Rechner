@@ -1,5 +1,7 @@
 const semesters = document.getElementById('semesters') as HTMLUListElement | null;
-
+const semesterInput = document.getElementById('semester-input') as HTMLInputElement;
+const addBtn = document.getElementById('addBtn') as HTMLButtonElement;
+const deleteBtn = document.getElementById('deleteBtn') as HTMLButtonElement;
 async function getSemester(): Promise<[string, string][] | undefined> {
     try {
         const response = await fetch("http://localhost:8000/list-semester", {
@@ -12,6 +14,48 @@ async function getSemester(): Promise<[string, string][] | undefined> {
         console.error('Error fetching semester list:', error);
     }
 }
+
+async function addSemester() {
+    const semester_name = semesterInput.value.trim();
+    if (!semester_name) return;
+    try {
+        const response = await fetch(`http://localhost:8000/add-semester/${semester_name}`, {
+            method: 'POST'
+        });
+        const data = await response.json();
+        console.log(data);
+        semesterInput.value = "";
+    }
+    catch (error) {
+        console.error('Error adding semester:', error);
+    }
+    location.reload();
+}
+
+async function deleteSemester() {
+    const semester_name = semesterInput.value.trim();
+    if (!semester_name) return;
+    try {
+        const response = await fetch(`http://localhost:8000/delete-semester/${semester_name}`, {
+            method: 'POST'
+        });
+        const data = await response.json();
+        console.log(data);
+        semesterInput.value = "";
+    }
+    catch (error) {
+        console.error('Error adding semester:', error);
+    }
+    location.reload();
+}
+
+semesterInput?.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        addSemester();
+    }
+})
+addBtn?.addEventListener("click", addSemester);
+deleteBtn?.addEventListener("click", deleteSemester);
 
 async function init_semesterList() {
     const semesterList = await getSemester();
@@ -26,7 +70,7 @@ async function init_semesterList() {
         const li = document.createElement('li');
         li.id = String(id);
         li.className = 'semester';
-        li.innerHTML = `<a href="index.html">${data_semester}</a>`;
+        li.innerHTML = `<a href="subjects.html">${data_semester}</a>`;
         
         li.addEventListener('click', async (event) => {
             event.preventDefault(); // Prevent immediate navigation
@@ -36,7 +80,7 @@ async function init_semesterList() {
                 });
                 const data = await response.json();
                 console.log("Semester set response:", data);
-                window.location.href = "index.html";
+                window.location.href = "subjects.html";
             } catch (error) {
                 console.error('Error setting semester:', error);
             }

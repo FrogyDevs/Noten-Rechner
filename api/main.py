@@ -16,9 +16,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.post('/add-fach/{fach_name}')
-def insert_fach(fach_name: str):
+#Fach related APIs
+#adds a fach to the current semester
+@app.post('/add-fach/{semesterID}/{fach_name}')
+def insert_fach(semesterID: int, fach_name: str):
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
@@ -26,8 +27,8 @@ def insert_fach(fach_name: str):
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'INSERT INTO fach (Fach) VALUES (%s)'
-    val = (fach_name)
+    sql = 'INSERT INTO fach (Fach, SemesterID) VALUES (%s, %s)'
+    val = (fach_name, semesterID)
     try:
         mycursor.execute(sql, val)
         mydb.commit()
@@ -37,8 +38,9 @@ def insert_fach(fach_name: str):
     mydb.close()
     return {"message": f"Fach '{fach_name}' added successfully"}
 
-@app.post('/delete-fach/{fach_name}')
-def delete_fach(fach_name: str):
+#deletes a fach from the current semester
+@app.post('/delete-fach/{semesterID}/{fach_name}') #TODO: Change to fach_id
+def delete_fach(semesterID: int, fach_name: str):
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
@@ -46,17 +48,19 @@ def delete_fach(fach_name: str):
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'DELETE FROM fach WHERE fach = %s'
-    val = (fach_name,)
+    sql = 'DELETE FROM fach WHERE fach.SemesterID = %s and fach.fach = %s'
+    val = (semesterID, fach_name)
     try:
         mycursor.execute(sql, val)
         mydb.commit()
     except:
         mydb.rollback()
+        return {"message": f"Fach '{fach_name}' could not be deleted"}
     mycursor.close()
     mydb.close()
     return {"message": f"Fach '{fach_name}' deleted successfully"}
 
+#lists all fachs of the current semester
 @app.get('/list-fach')
 def list_fach():
     mydb = mysql.connector.connect(
@@ -73,6 +77,9 @@ def list_fach():
     mydb.close()
     return data
 
+
+#Semester related APIs
+#lists all semesters
 @app.get('/list-semester')
 def list_semester():
     mydb = mysql.connector.connect(
@@ -89,6 +96,7 @@ def list_semester():
     mydb.close()
     return data
 
+#sets the current semester
 @app.post('/set-semester/{semester_id}')
 def set_semester(semester_id: str):
     mydb = mysql.connector.connect(
@@ -110,5 +118,64 @@ def set_semester(semester_id: str):
     mydb.close()
     return {"message": f"Semester '{semester_id}' set successfully"}
 
+#gets the current semester
+@app.get('/get-Currentsemester')
+def get_Currentsemester():
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'SELECT SemesterID, Semester FROM semester where currentSemester=true'
+    mycursor.execute(sql)
+    data = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
+    return data
+
+#adds a semester
+@app.post('/add-semester/{semester}')
+def add_semester(semester: str):
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'INSERT INTO semester (Semester) VALUES (%s)'
+    val = (semester,)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except:
+        mydb.rollback()
+    mycursor.close()
+    mydb.close()
+    return {"message": f"Semester '{semester}' added successfully"}
+
+@app.post('/delete-semester/{semester_name}')
+def delete_semester(semester_name: str): #TODO: Change to semester_id
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'DELETE FROM semester WHERE semester.Semester = %s'
+    val = (semester_name,)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except:
+        mydb.rollback()
+        return {"message": f"Semester '{semester_name}' could not be deleted"}
+    mycursor.close()
+    mydb.close()
+    return {"message": f"Semester '{semester_name}' deleted successfully"}
+
 if __name__ == '__main__':
-    print(list_fach)
+    print(delete_semester('HS1'))
