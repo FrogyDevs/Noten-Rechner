@@ -24,11 +24,11 @@ insert into Semester (Semester) values ('HS1'),('FS1'),('HS2'),('FS2');
 insert into Fach (SemesterID, Fach) values (1,'Mathematik'),(2,'Deutsch'),(3,'Englisch'),(4,'Biologie');
 
 delimiter //
-create procedure updateCurrentSemester (SemesterID int)
+create procedure updateCurrentSemester (Semester_ID int)
     deterministic
     begin
-        update Semester set currentSemester = false where Semester.SemesterID <> SemesterID;
-        update Semester set currentSemester = true where Semester.SemesterID = SemesterID;
+        update Semester set currentSemester = false where Semester.SemesterID <> Semester_ID;
+        update Semester set currentSemester = true where Semester.SemesterID = Semester_ID;
 
     end //
 delimiter ;
