@@ -1,7 +1,7 @@
 const fach = document.getElementById("Fach") as HTMLInputElement;
 const addButton = document.getElementById("add-button") as HTMLButtonElement;
 const deleteButton = document.getElementById("delete-button") as HTMLButtonElement;
-const overview = document.getElementById("overview") as HTMLUListElement;
+const overview = document.getElementById("overview-fach") as HTMLUListElement;
 
 async function addFach() {
     const fach_name = fach.value.trim();
@@ -59,7 +59,6 @@ async function getFach() {
 }
 async function fachList() {
     const fachList = await getFach();
-    sessionStorage.setItem('reloaded', 'false');
     for (const fach of fachList) {
         overview.innerHTML += `<li>${fach}</li>`;
     }

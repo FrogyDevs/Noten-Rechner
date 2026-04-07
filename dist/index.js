@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const fach = document.getElementById("Fach");
 const addButton = document.getElementById("add-button");
 const deleteButton = document.getElementById("delete-button");
-const overview = document.getElementById("overview");
+const overview = document.getElementById("overview-fach");
 function addFach() {
     return __awaiter(this, void 0, void 0, function* () {
         const fach_name = fach.value.trim();
@@ -75,7 +75,6 @@ function getFach() {
 function fachList() {
     return __awaiter(this, void 0, void 0, function* () {
         const fachList = yield getFach();
-        sessionStorage.setItem('reloaded', 'false');
         for (const fach of fachList) {
             overview.innerHTML += `<li>${fach}</li>`;
         }

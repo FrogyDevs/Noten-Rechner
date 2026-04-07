@@ -26,8 +26,8 @@ def insert_fach(fach_name: str):
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'INSERT INTO fach (fach) VALUES (%s)'
-    val = (fach_name,)
+    sql = 'INSERT INTO fach (SemesterID,Fach) VALUES (%s)'
+    val = (fach_name)
     mycursor.execute(sql, val)
     mydb.commit()
     mycursor.close()
@@ -53,7 +53,6 @@ def delete_fach(fach_name: str):
 
 @app.get('/list-fach')
 def list_fach():
-    result = []
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
@@ -67,6 +66,39 @@ def list_fach():
     mycursor.close()
     mydb.close()
     return data
+
+@app.get('/list-semester')
+def list_semester():
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'SELECT SemesterID, Semester FROM semester'
+    mycursor.execute(sql)
+    data = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
+    return data
+
+@app.post('/set-semester/{semester_id}')
+def set_semester(semester_id: str):
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'call updateCurrentSemester(%s)'
+    val = (semester_id)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+    mydb.close()
+    return {"message": f"Semester '{semester_id}' set successfully"}
 
 if __name__ == '__main__':
     print(list_fach())
