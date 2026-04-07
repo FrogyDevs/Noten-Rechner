@@ -26,10 +26,13 @@ def insert_fach(fach_name: str):
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'INSERT INTO fach (SemesterID,Fach) VALUES (%s)'
+    sql = 'INSERT INTO fach (Fach) VALUES (%s)'
     val = (fach_name)
-    mycursor.execute(sql, val)
-    mydb.commit()
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except:
+        mydb.rollback()
     mycursor.close()
     mydb.close()
     return {"message": f"Fach '{fach_name}' added successfully"}
@@ -45,8 +48,11 @@ def delete_fach(fach_name: str):
     mycursor = mydb.cursor()
     sql = 'DELETE FROM fach WHERE fach = %s'
     val = (fach_name,)
-    mycursor.execute(sql, val)
-    mydb.commit()
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except:
+        mydb.rollback()
     mycursor.close()
     mydb.close()
     return {"message": f"Fach '{fach_name}' deleted successfully"}
@@ -60,7 +66,7 @@ def list_fach():
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'SELECT Fach FROM fach'
+    sql = 'SELECT fach.Fach FROM fach where fach.SemesterID = (select SemesterID from semester where currentSemester=true)'
     mycursor.execute(sql)
     data = mycursor.fetchall()
     mycursor.close()
@@ -93,12 +99,16 @@ def set_semester(semester_id: str):
     )
     mycursor = mydb.cursor()
     sql = 'call updateCurrentSemester(%s)'
-    val = (semester_id)
-    mycursor.execute(sql, val)
-    mydb.commit()
+    val = (semester_id,)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except Exception as e:
+        mydb.rollback()
+        return {"message": f"Semester '{semester_id}' could not be set. {e}"}
     mycursor.close()
     mydb.close()
     return {"message": f"Semester '{semester_id}' set successfully"}
 
 if __name__ == '__main__':
-    print(list_fach())
+    print(list_fach)

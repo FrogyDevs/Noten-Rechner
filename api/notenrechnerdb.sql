@@ -33,7 +33,5 @@ create procedure updateCurrentSemester (Semester_ID int)
     end //
 delimiter ;
 
-call updateCurrentSemester(1);
-call updateCurrentSemester(2);
 select * from Semester;
 select * from Fach;
