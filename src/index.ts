@@ -3,6 +3,8 @@ const addButton = document.getElementById("add-button") as HTMLButtonElement;
 const deleteButton = document.getElementById("delete-button") as HTMLButtonElement;
 const overview = document.getElementById("overview-fach") as HTMLUListElement;
 
+export {};
+
 async function getCurrentSemester() {
     try {
         const response = await fetch("http://localhost:8000/get-Currentsemester", {
@@ -86,7 +88,7 @@ async function fachList() {
     const fetchedData = await getFach();
     if (!fetchedData) return;
     for (const [fachName] of fetchedData) {
-        overview.innerHTML += `<li>${fachName}</li>`;
+        overview.innerHTML += `<li><a href="marks.html">${fachName}</a></li>`;
     }
 
 }

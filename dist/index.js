@@ -1,4 +1,3 @@
-"use strict";
 const fach = document.getElementById("Fach");
 const addButton = document.getElementById("add-button");
 const deleteButton = document.getElementById("delete-button");
@@ -89,7 +88,8 @@ async function fachList() {
     if (!fetchedData)
         return;
     for (const [fachName] of fetchedData) {
-        overview.innerHTML += `<li>${fachName}</li>`;
+        overview.innerHTML += `<li><a href="marks.html">${fachName}</a></li>`;
     }
 }
 fachList();
+export {};

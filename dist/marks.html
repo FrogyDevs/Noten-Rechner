@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Notenrechner - Noten</title>
+</head>
+<body>
+  <h1>Noten</h1>
+  <div id="marks">
+    <a href="subjects.html">Back to Fächer</a>
+    <h3>Noten hinzufügen</h3>
+    <input type="text" id="mark-name" placeholder="Name der Prüfung"><input type="number" id="mark-value" placeholder="Note" min="1" max="6" step="0.01"><button id="add-mark">Add</button><button id="delete-mark">Delete</button>
+    <div id="overview-container">
+      <ul id="overview-marks">
+      </ul>
+    </div>
+  </div>
+<script src="marks.js"></script>
+</body>
+</html>

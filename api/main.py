@@ -77,6 +77,42 @@ def list_fach():
     mydb.close()
     return data
 
+@app.post('/set-fach/{semesterID}')
+def set_fach(semesterID: int):
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'call updateCurrentFach(%s)'
+    val = (semesterID,)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except Exception as e:
+        mydb.rollback()
+        return {"message": f"Fach '{semesterID}' could not be set. {e}"}
+    mycursor.close()
+    mydb.close()
+    return {"message": f"Fach '{semesterID}' set successfully"}
+
+@app.get('/get-currentfach')
+def get_currentfach():
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = ('SELECT Fach.FachID FROM Fach where Fach.currentFach=true')
+    mycursor.execute(sql)
+    data = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
+    return data
 
 #Semester related APIs
 #lists all semesters
@@ -177,5 +213,43 @@ def delete_semester(semester_name: str): #TODO: Change to semester_id
     mydb.close()
     return {"message": f"Semester '{semester_name}' deleted successfully"}
 
+# API's for the marks
+@app.get('/get-marks')
+def get_marks():
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'SELECT NotenID, exam, Note FROM Note where Note.FachID = (select FachID from Fach where currentFach = true)'
+    mycursor.execute(sql)
+    data = mycursor.fetchall()
+    mycursor.close()
+    mydb.close()
+    return data
+
+@app.post('/add-marks/{fach_id}/{exam}/{note}')
+def add_marks(fach_id: int, exam: str, note: int):
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'call updateNote(%s, %s, %s)'
+    val = (fach_id, exam, note)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except Exception as e:
+        mydb.rollback()
+        return {"message": f"Note for '{exam}' could not be set. {e}"}
+    mycursor.close()
+    mydb.close()
+    return {"message": f"Note for '{exam}' set successfully"}
+
 if __name__ == '__main__':
-    print(delete_semester('HS1'))
+    print(get_currentfach())
