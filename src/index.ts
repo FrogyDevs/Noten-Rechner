@@ -1,9 +1,7 @@
 const fach = document.getElementById("Fach") as HTMLInputElement;
 const addButton = document.getElementById("add-button") as HTMLButtonElement;
 const deleteButton = document.getElementById("delete-button") as HTMLButtonElement;
-const overview = document.getElementById("overview-fach") as HTMLUListElement;
-
-export {};
+const overview_fach = document.getElementById("overview-fach") as HTMLUListElement;
 
 async function getCurrentSemester() {
     try {
@@ -88,7 +86,7 @@ async function fachList() {
     const fetchedData = await getFach();
     if (!fetchedData) return;
     for (const [fachName] of fetchedData) {
-        overview.innerHTML += `<li><a href="marks.html">${fachName}</a></li>`;
+        overview_fach.innerHTML += `<li><a href="marks.html">${fachName}</a></li>`;
     }
 
 }

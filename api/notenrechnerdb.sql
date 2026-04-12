@@ -48,3 +48,4 @@ delimiter ;
 call updateCurrentFach(1);
 select * from Semester;
 select * from Fach;
+select * from Note;

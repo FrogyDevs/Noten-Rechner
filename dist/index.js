@@ -1,7 +1,8 @@
+"use strict";
 const fach = document.getElementById("Fach");
 const addButton = document.getElementById("add-button");
 const deleteButton = document.getElementById("delete-button");
-const overview = document.getElementById("overview-fach");
+const overview_fach = document.getElementById("overview-fach");
 async function getCurrentSemester() {
     try {
         const response = await fetch("http://localhost:8000/get-Currentsemester", {
@@ -88,8 +89,7 @@ async function fachList() {
     if (!fetchedData)
         return;
     for (const [fachName] of fetchedData) {
-        overview.innerHTML += `<li><a href="marks.html">${fachName}</a></li>`;
+        overview_fach.innerHTML += `<li><a href="marks.html">${fachName}</a></li>`;
     }
 }
 fachList();
-export {};

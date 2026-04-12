@@ -231,7 +231,7 @@ def get_marks():
     return data
 
 @app.post('/add-marks/{fach_id}/{exam}/{note}')
-def add_marks(fach_id: int, exam: str, note: int):
+def add_marks(fach_id: int, exam: str, note: float):
     mydb = mysql.connector.connect(
         host='localhost',
         user='root',
@@ -239,7 +239,7 @@ def add_marks(fach_id: int, exam: str, note: int):
         database='notenrechnerdb'
     )
     mycursor = mydb.cursor()
-    sql = 'call updateNote(%s, %s, %s)'
+    sql = 'INSERT INTO Note (FachID, exam, Note) VALUES (%s, %s, %s)'
     val = (fach_id, exam, note)
     try:
         mycursor.execute(sql, val)
@@ -251,5 +251,26 @@ def add_marks(fach_id: int, exam: str, note: int):
     mydb.close()
     return {"message": f"Note for '{exam}' set successfully"}
 
+@app.post('/delete-mark/{fach_id}/{exam}')
+def delete_mark(fach_id: int, exam: str):
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password=DB_PW,
+        database='notenrechnerdb'
+    )
+    mycursor = mydb.cursor()
+    sql = 'DELETE FROM Note WHERE Note.FachID = %s and Note.exam = %s'
+    val = (fach_id, exam)
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except:
+        mydb.rollback()
+        return {"message": f"Note for '{exam}' could not be deleted"}
+    mycursor.close()
+    mydb.close()
+    return {"message": f"Note for '{exam}' deleted successfully"}
+
 if __name__ == '__main__':
-    print(get_currentfach())
+    print(add_marks(1, "Test", 2.5))
